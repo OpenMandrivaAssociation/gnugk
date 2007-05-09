@@ -1,26 +1,27 @@
-%define openh323_version 1.15.3
-%define pwlib_version 1.8.4
+%define name gnugk
+%define version 2.2.6
+%define release %mkrel 1
 
 Summary:	OpenH323 Gatekeeper - The GNU Gatekeeper
-Name:		gnugk
-Version:	2.2.3
-Release:	%mkrel 5
+Name:		%{name}
+Version:	%{version}
+Release:	%{release}
 License:	GPL
 Group:		System/Servers
 URL:		http://www.gnugk.org/
-Source0:	http://prdownloads.sourceforge.net/openh323gk/%{name}-%{version}-2.tar.bz2
-Source2:	gnugk.init.bz2
-Source3:	gnugk.sysconfig.bz2
+Source0:	http://prdownloads.sourceforge.net/openh323gk/%{name}-%{version}.tar.bz2
+Source2:	gnugk.init
+Source3:	gnugk.sysconfig
 Requires(post): rpm-helper
 Requires(preun): rpm-helper
 Requires(pre): rpm-helper
 Requires(postun): rpm-helper
 BuildRequires:	file
 BuildRequires:	linuxdoc-tools
-BuildRequires:	openh323-devel >= %{openh323_version} pwlib-devel >= %{pwlib_version}
-Requires:	openh323_1 >= %{openh323_version}
+BuildRequires:	openh323-devel pwlib-devel
+Requires:	openh323_1
 BuildRequires:	pkgconfig
-BuildRequires:	MySQL-devel
+BuildRequires:	mysql-devel
 BuildRequires:	postgresql-devel
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
@@ -32,14 +33,11 @@ telephony system (VOIP).
 
 %prep
 
-%setup -q -n openh323gk-%{version}
+%setup -q
 
 # strip away annoying ^M
 find . -type f|xargs file|grep 'CRLF'|cut -d: -f1|xargs perl -p -i -e 's/\r//'
 find . -type f|xargs file|grep 'text'|cut -d: -f1|xargs perl -p -i -e 's/\r//'
-
-bzcat %{SOURCE2} > gnugk.init
-bzcat %{SOURCE3} > gnugk.sysconfig
 
 %build
 autoconf
@@ -75,8 +73,8 @@ install -m0755 obj_*/%{name} %{buildroot}%{_sbindir}/
 install -m0755 obj_*/addpasswd %{buildroot}%{_sbindir}/%{name}-addpasswd
 
 install -m0644 etc/complete.ini %{buildroot}%{_sysconfdir}/%{name}.ini
-install -m0755 gnugk.init %{buildroot}%{_initrddir}/%{name}
-install -m0644 gnugk.sysconfig %{buildroot}%{_sysconfdir}/sysconfig/%{name}
+install -m0755 %SOURCE2 %{buildroot}%{_initrddir}/%{name}
+install -m0644 %SOURCE3 %{buildroot}%{_sysconfdir}/sysconfig/%{name}
 
 cat > %{buildroot}%{_sysconfdir}/logrotate.d/%{name} << EOF
 /var/log/%{name}/%{name}.log {
@@ -108,7 +106,7 @@ EOF
 
 %files
 %defattr(-,root,root,-)
-%doc billing.pl changes.txt copying docs/manual/*.html docs/*.txt etc contrib
+%doc changes.txt docs/manual/*.html docs/*.txt etc contrib
 %attr(0755,root,root) %{_initrddir}/%{name}
 %attr(0644,root,root) %config(noreplace) %{_sysconfdir}/%{name}.ini
 %attr(0644,root,root) %config(noreplace) %{_sysconfdir}/logrotate.d/%{name}
