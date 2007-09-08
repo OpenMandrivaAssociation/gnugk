@@ -1,6 +1,6 @@
 %define name gnugk
 %define version 2.2.6
-%define release %mkrel 1
+%define release %mkrel 2
 
 Summary:	OpenH323 Gatekeeper - The GNU Gatekeeper
 Name:		%{name}
