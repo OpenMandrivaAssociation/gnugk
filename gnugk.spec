@@ -23,6 +23,7 @@ Requires:	openh323_1
 BuildRequires:	pkgconfig
 BuildRequires:	mysql-devel
 BuildRequires:	postgresql-devel
+BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 %description
 The GNU Gatekeeper (GnuGk) is a full featured H.323 gatekeeper,
