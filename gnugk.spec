@@ -1,39 +1,47 @@
-%define name gnugk
-%define version 2.2.6
-%define release %mkrel 2
+%define cvs	20071225
+%if %cvs
+%define release %mkrel 0.%cvs.1
+%else
+%define release	%mkrel 1
+%endif
 
 Summary:	OpenH323 Gatekeeper - The GNU Gatekeeper
-Name:		%{name}
-Version:	%{version}
+Name:		gnugk
+Version:	2.2.7
 Release:	%{release}
-License:	GPL
+License:	GPL+
 Group:		System/Servers
 URL:		http://www.gnugk.org/
-Source0:	http://prdownloads.sourceforge.net/openh323gk/%{name}-%{version}.tar.bz2
-Source2:	gnugk.init
-Source3:	gnugk.sysconfig
-Requires(post): rpm-helper
-Requires(preun): rpm-helper
-Requires(pre): rpm-helper
-Requires(postun): rpm-helper
-BuildRequires:	file
+%if cvs
+Source0:	openh323gk-%{cvs}.tar.lzma
+%else
+Source0:	http://prdownloads.sourceforge.net/openh323gk/openh323gk-%{version}-2.tar.bz2
+%endif
+Source1:	gnugk.init
+Source2:	gnugk.sysconfig
+Patch0:		gnugk-2.2.7-include.patch
+Patch1:		gnugk-2.2.7-toolkit.patch
 BuildRequires:	linuxdoc-tools
-BuildRequires:	openh323-devel pwlib-devel
-Requires:	openh323_1
+BuildRequires:	openh323-devel
+BuildRequires:	pwlib-devel
 BuildRequires:	pkgconfig
 BuildRequires:	mysql-devel
 BuildRequires:	postgresql-devel
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 %description
-The GNU Gatekeeper (GnuGk) is a full featured H.323 gatekeeper,
-available freely under GPL license. It is based on the Open H.323
-stack. Both components together form the basis for a free IP
-telephony system (VOIP).
+The GNU Gatekeeper (GnuGk) is a full featured H.323 gatekeeper. It is
+based on the Open H.323 (H323plus) stack. Both components together
+form the basis for a free IP telephony system (VOIP).
 
 %prep
-
-%setup -q
+%if %cvs
+%setup -q -n openh323gk
+%else
+%setup -q -n openh323gk-%{release}
+%endif
+%patch0 -p1 -b .include
+%patch1 -p1 -b .toolkit
 
 # strip away annoying ^M
 find . -type f|xargs file|grep 'CRLF'|cut -d: -f1|xargs perl -p -i -e 's/\r//'
@@ -45,7 +53,7 @@ autoconf
 export CFLAGS="%{optflags} -DLDAP_DEPRECATED"
 export CXXFLAGS="%{optflags} -DLDAP_DEPRECATED"
 
-%configure
+%configure2_5x
 
 %make \
     OPTCCFLAGS="%{optflags}" \
@@ -73,8 +81,8 @@ install -m0755 obj_*/%{name} %{buildroot}%{_sbindir}/
 install -m0755 obj_*/addpasswd %{buildroot}%{_sbindir}/%{name}-addpasswd
 
 install -m0644 etc/complete.ini %{buildroot}%{_sysconfdir}/%{name}.ini
-install -m0755 %SOURCE2 %{buildroot}%{_initrddir}/%{name}
-install -m0644 %SOURCE3 %{buildroot}%{_sysconfdir}/sysconfig/%{name}
+install -m0755 %{SOURCE1} %{buildroot}%{_initrddir}/%{name}
+install -m0644 %{SOURCE2} %{buildroot}%{_sysconfdir}/sysconfig/%{name}
 
 cat > %{buildroot}%{_sysconfdir}/logrotate.d/%{name} << EOF
 /var/log/%{name}/%{name}.log {
