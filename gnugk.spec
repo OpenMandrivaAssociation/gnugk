@@ -97,7 +97,7 @@ cat > %{buildroot}%{_sysconfdir}/logrotate.d/%{name} << EOF
 EOF
 
 %pre
-%_pre_useradd %{name} %{_localstatedir}/%{name} /bin/false
+%_pre_useradd %{name} %{_localstatedir}/lib/%{name} /bin/false
 
 %postun
 %_postun_userdel %{name}
