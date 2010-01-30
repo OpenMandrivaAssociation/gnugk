@@ -1,26 +1,13 @@
-%define cvs	20071225
-%if %cvs
-%define release %mkrel 0.%cvs.4
-%else
-%define release	%mkrel 3
-%endif
-
 Summary:	OpenH323 Gatekeeper - The GNU Gatekeeper
 Name:		gnugk
-Version:	2.2.7
-Release:	%{release}
+Version:	2.3.1
+Release:	%mkrel 1
 License:	GPL+
 Group:		System/Servers
 URL:		http://www.gnugk.org/
-%if cvs
-Source0:	openh323gk-%{cvs}.tar.lzma
-%else
-Source0:	http://prdownloads.sourceforge.net/openh323gk/openh323gk-%{version}-2.tar.bz2
-%endif
+Source:		http://downloads.sourceforge.net/openh323gk/%{name}-%{version}.tar.gz
 Source1:	gnugk.init
 Source2:	gnugk.sysconfig
-Patch0:		gnugk-2.2.7-include.patch
-Patch1:		gnugk-2.2.7-toolkit.patch
 BuildRequires:	linuxdoc-tools
 BuildRequires:	openh323-devel
 BuildRequires:	pwlib-devel
@@ -35,17 +22,7 @@ based on the Open H.323 (H323plus) stack. Both components together
 form the basis for a free IP telephony system (VOIP).
 
 %prep
-%if %cvs
-%setup -q -n openh323gk
-%else
-%setup -q -n openh323gk-%{release}
-%endif
-%patch0 -p1 -b .include
-%patch1 -p1 -b .toolkit
-
-# strip away annoying ^M
-find . -type f|xargs file|grep 'CRLF'|cut -d: -f1|xargs perl -p -i -e 's/\r//'
-find . -type f|xargs file|grep 'text'|cut -d: -f1|xargs perl -p -i -e 's/\r//'
+%setup -q
 
 %build
 autoconf
@@ -62,7 +39,7 @@ export CXXFLAGS="%{optflags} -DLDAP_DEPRECATED"
     OPENH323DIR=%{_prefix} \
     PREFIX=%{_prefix} \
     PWLIB_BUILD=1 \
-    LDFLAGS="-L%{_libdir}" \
+    LDFLAGS="%{?ldflags}" \
     optshared addpasswd
 
 make doc
