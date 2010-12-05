@@ -1,7 +1,7 @@
 Summary:	OpenH323 Gatekeeper - The GNU Gatekeeper
 Name:		gnugk
 Version:	2.3.1
-Release:	%mkrel 1
+Release:	%mkrel 2
 License:	GPL+
 Group:		System/Servers
 URL:		http://www.gnugk.org/
