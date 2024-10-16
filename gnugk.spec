@@ -4,7 +4,7 @@ Version:	2.3.1
 Release:	%mkrel 6
 License:	GPL+
 Group:		System/Servers
-URL:		http://www.gnugk.org/
+URL:		https://www.gnugk.org/
 Source:		http://downloads.sourceforge.net/openh323gk/%{name}-%{version}.tar.gz
 Source1:	gnugk.init
 Source2:	gnugk.sysconfig
