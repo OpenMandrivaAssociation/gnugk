@@ -8,6 +8,11 @@ URL:		https://www.gnugk.org/
 Source:		http://downloads.sourceforge.net/openh323gk/%{name}-%{version}.tar.gz
 Source1:	gnugk.init
 Source2:	gnugk.sysconfig
+BuildRequires:	autoconf
+BuildRequires:	automake
+BuildRequires:	libtool-base
+BuildRequires:	slibtool
+BuildRequires:	make
 BuildRequires:	linuxdoc-tools
 BuildRequires:	openh323-devel
 BuildRequires:	pwlib-devel
